@@ -18,7 +18,7 @@ FROM openjdk:11-jre-slim
 WORKDIR /app
 
 # Copy the jar file from the build stage
-COPY --from=build /app/target/Library-Management-System-Backend-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/library-management-system-0.0.1-SNAPSHOT.jar app.jar
 
 # Set environment variable for MongoDB connection
 ENV SPRING_DATA_MONGODB_URI=mongodb+srv://lms:lms@cluster0.m99hx.mongodb.net/Library-Management-System
