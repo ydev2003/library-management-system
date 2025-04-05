@@ -1,26 +1,11 @@
 package com.merck.library_management_system.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.merck.library_management_system.security.JwtUtil;
-import com.merck.library_management_system.securitymodels.AuthenticationRequest;
-import com.merck.library_management_system.securitymodels.AuthenticationResponse;
-import com.merck.library_management_system.services.MyUserDetailsService;
-
+import com.merck.library_management_system.model.AuthenticationRequest;
+import com.merck.library_management_system.service.LoginService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 
 @Tag(name = "Authentication Operations", description = "Operations related to Authentication management")
@@ -28,52 +13,37 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/login")
 public class LoginController {
-	
-	@Autowired
-	private AuthenticationManager authenticationManager;
 
-	@Autowired
-	private JwtUtil jwtTokenUtil;
+    private final LoginService loginService;
 
-	@Autowired
-	private MyUserDetailsService userDetailsService;
-
-//	@GetMapping({ "/hello" })
-//	public String firstPage() {
-//		return "Hello World";
-//	}
-	
-	@ApiOperation(tags="Authentication Operations", value="Admin Login", notes = "Login as Admin")
-	@PostMapping("/admin")
-    public ResponseEntity<?> createAuthenticationTokenForAdmin(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
-        return createAuthenticationToken(authenticationRequest, "ROLE_ADMIN");
+    @Autowired
+    public LoginController(LoginService loginService) {
+        this.loginService = loginService;
     }
-	
 
-	@ApiOperation(tags="Authentication Operations", value = "Student Login", notes = "Login as Student")
+    /**
+     * Will be used to log in as Admin
+     *
+     * @param authenticationRequest - authentication request
+     * @return jwt token
+     */
+    @PostMapping("/admin")
+    @ApiOperation(tags = "Authentication Operations", value = "Admin Login", notes = "Login as Admin")
+    public String createAuthenticationTokenForAdmin(
+            @RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+        return loginService.createAuthenticationToken(authenticationRequest, "ROLE_ADMIN");
+    }
+
+    /**
+     * Will be used to log in as student
+     *
+     * @param authenticationRequest - authentication request
+     * @return - jwt token
+     * @throws - Exception
+     */
     @PostMapping("/user")
-    public ResponseEntity<?> createAuthenticationTokenForStudent(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
-        return createAuthenticationToken(authenticationRequest, "ROLE_STUDENT");
-    }
-	
-	
-	
-
-    private ResponseEntity<?> createAuthenticationToken(AuthenticationRequest authenticationRequest, String expectedRole) throws Exception {
-        try {
-            authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
-            );
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
-        }
-
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        
-        if (!userDetails.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals(expectedRole))) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: User does not have the required role");
-        }
-        final String jwt = jwtTokenUtil.generateToken(userDetails, expectedRole);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+    @ApiOperation(tags = "Authentication Operations", value = "Student Login", notes = "Login as Student")
+    public String createAuthenticationTokenForStudent(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+        return loginService.createAuthenticationToken(authenticationRequest, "ROLE_STUDENT");
     }
 }

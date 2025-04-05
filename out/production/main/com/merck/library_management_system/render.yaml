@@ -1,0 +1,16 @@
+version: 1
+services:
+  - type: web
+    name: library-management-system
+    env: java
+    buildCommand: mvn clean package
+    startCommand: java -jar target/library-management-system-0.0.1-SNAPSHOT.jar
+    autoDeploy: true
+    plan: starter
+    regions:
+      - oregon
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: SPRING_DATA_MONGODB_URI
+        value: mongodb+srv://lms:lms@cluster0.m99hx.mongodb.net/Library-Management-System

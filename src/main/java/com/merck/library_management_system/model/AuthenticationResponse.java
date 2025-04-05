@@ -1,4 +1,4 @@
-package com.merck.library_management_system.securitymodels;
+package com.merck.library_management_system.model;
 
 import java.io.Serializable;
 

@@ -1,7 +1,7 @@
 package com.merck.library_management_system.configuration;
 
+import com.merck.library_management_system.security.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,14 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.merck.library_management_system.security.JwtRequestFilter;
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
 
 
     @Autowired
@@ -43,7 +40,7 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .authorizeRequests(requests -> requests
                         .antMatchers("/v2/api-docs", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**").permitAll() // Allow access to Swagger
-                        .antMatchers("/login/user", "/login/admin").permitAll()
+                        .antMatchers("/login/user", "/login/admin", "/login/**").permitAll()
                         .antMatchers("/admin/**", "/book/**", "/student/**").hasRole("ADMIN") // Admin-specific endpoints
                         .antMatchers("/user/**").hasRole("STUDENT") // Student-specific endpoints
                         .anyRequest().authenticated())
