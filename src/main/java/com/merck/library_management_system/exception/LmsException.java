@@ -1,6 +1,5 @@
 package com.merck.library_management_system.exception;
 
-import java.io.Serial;
 import java.util.List;
 
 /**
@@ -11,7 +10,6 @@ import java.util.List;
 
 public class LmsException extends Exception {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     private final String errorCode;
