@@ -1,6 +1,5 @@
 package com.merck.library_management_system.exception;
 
-import java.io.Serial;
 import java.util.List;
 
 /**
@@ -11,7 +10,6 @@ import java.util.List;
 
 public class DatavaidationException extends LmsException {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     public DatavaidationException(String message) {
