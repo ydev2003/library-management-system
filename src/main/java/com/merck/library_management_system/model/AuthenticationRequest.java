@@ -1,4 +1,4 @@
-package com.merck.library_management_system.securitymodels;
+package com.merck.library_management_system.model;
 
 
 import java.io.Serializable;
@@ -6,8 +6,18 @@ import java.io.Serializable;
 public class AuthenticationRequest implements Serializable {
 
 
-	private String username;
+    private String username;
     private String password;
+
+    //need default constructor for JSON Parsing
+    public AuthenticationRequest() {
+
+    }
+
+    public AuthenticationRequest(String username, String password) {
+        this.setUsername(username);
+        this.setPassword(password);
+    }
 
     public String getUsername() {
         return username;
@@ -23,16 +33,5 @@ public class AuthenticationRequest implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    //need default constructor for JSON Parsing
-    public AuthenticationRequest()
-    {
-
-    }
-
-    public AuthenticationRequest(String username, String password) {
-        this.setUsername(username);
-        this.setPassword(password);
     }
 }
